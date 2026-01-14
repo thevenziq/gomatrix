@@ -1,16 +1,18 @@
 package gomatrix
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
 
 type Matrix struct {
-	columns uint
-	rows    uint
+	Columns uint `json:"columns"`
+	Rows    uint `json:"rows"`
 
-	matrix [][]int
+	Matrix [][]int `json:"matrix"`
 }
 
 var (
@@ -31,18 +33,29 @@ func New(cols, rows uint) (*Matrix, error) {
 	}
 
 	return &Matrix{
-		columns: cols,
-		rows:    rows,
+		Columns: cols,
+		Rows:    rows,
 
-		matrix: matrix,
+		Matrix: matrix,
 	}, nil
+}
+
+func FromJSON(data []byte) (*Matrix, error) {
+	var matrix Matrix
+
+	err := json.Unmarshal(data, &matrix)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshaling: %v", err)
+	}
+
+	return &matrix, err
 }
 
 // Generates a string from a matrix suitable for human perception
 func (m *Matrix) String() string {
 	var rows []string
 
-	for _, row := range m.matrix {
+	for _, row := range m.Matrix {
 		var elements []string
 		for _, num := range row {
 			elements = append(elements, strconv.Itoa(num))
