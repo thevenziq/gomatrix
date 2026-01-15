@@ -41,6 +41,20 @@ func New(cols, rows uint) (*Matrix, error) {
 	}, nil
 }
 
+func FromArray(array [][]int) (*Matrix, error) {
+	cols := uint(len(array[0]))
+	rows := uint(len(array))
+
+	if cols <= 0 || rows <= 0 {
+		return nil, ErrZeroValue
+	}
+	return &Matrix{
+		Columns: cols,
+		Rows:    rows,
+		Matrix:  array,
+	}, nil
+}
+
 func FromJSON(data []byte) (*Matrix, error) {
 	var matrix Matrix
 
