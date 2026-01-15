@@ -63,5 +63,5 @@ func (m *Matrix) String() string {
 		rows = append(rows, strings.Join(elements, " "))
 	}
 
-	return "\n" + strings.Join(rows, "\n")
+	return strings.Join(rows, "\n")
 }
