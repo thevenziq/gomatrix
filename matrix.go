@@ -16,7 +16,8 @@ type Matrix struct {
 }
 
 var (
-	ErrZeroValue = errors.New("using zero values for the columns or rows of the matrix")
+	ErrZeroValue    = errors.New("using zero values for the columns or rows of the matrix")
+	ErrSumDiffOrder = errors.New("summing matrices of different order")
 )
 
 // Creates a matrix and fills it with zeros
@@ -64,4 +65,38 @@ func (m *Matrix) String() string {
 	}
 
 	return strings.Join(rows, "\n")
+}
+
+func Sum(matrices ...*Matrix) (*Matrix, error) {
+	if !matricesAreSameOrder(matrices...) {
+		return nil, ErrSumDiffOrder
+	}
+
+	rows := matrices[0].Rows
+	cols := matrices[0].Columns
+
+	matrixSum, _ := New(cols, rows)
+
+	for _, matrix := range matrices {
+		for i := uint(0); i < rows; i++ {
+			for j := uint(0); j < cols; j++ {
+				matrixSum.Matrix[i][j] += matrix.Matrix[i][j]
+			}
+		}
+	}
+
+	return matrixSum, nil
+}
+
+func matricesAreSameOrder(matrices ...*Matrix) bool {
+	firstRow := matrices[0].Rows
+	firstCol := matrices[0].Columns
+
+	for i := 1; i < len(matrices); i++ {
+		if firstRow != matrices[i].Rows || firstCol != matrices[i].Columns {
+			return false
+		}
+	}
+
+	return true
 }
